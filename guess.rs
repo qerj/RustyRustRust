@@ -1,3 +1,4 @@
+use core::num;
 use std::{io, ptr::read_unaligned, cmp::Ordering};
 use rand::Rng;
 
@@ -9,6 +10,7 @@ fn main() {
 
     println!("The secret number: {secret_number}");
 
+    loop { 
     println!("Please guess the secret number: ");
 
 
@@ -16,13 +18,21 @@ fn main() {
 
     io::stdin().read_line(&mut guess).expect("Failed to read line");
 
-    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+    let guess: u32 = match guess.trim().parse() {
+        Ok(num) => num, 
+        Err(_) => continue,
+    };
+    
 
     println!("You gussed: {guess}");
 
-    match guess.cmp(&secret_number) {
-        Ordering::Less => println!("Too small"),
-        Ordering::Greater => println!("Too big"),
-        Ordering::Equal => println!("YOU GUESSED THE NUMBER!")
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small"),
+            Ordering::Greater => println!("Too big"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            }
+        }   
     }
 }
